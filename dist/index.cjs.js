@@ -511,6 +511,9 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
     _this.requestRotateCW = _this.requestRotateCW.bind(
       _assertThisInitialized(_this)
     );
+    _this.requestOpenImage = _this.requestOpenImage.bind(
+      _assertThisInitialized(_this)
+    );
     return _this;
   } // eslint-disable-next-line camelcase
 
@@ -1024,6 +1027,31 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
           case KEYS.SPACE:
             event.preventDefault();
             this.requestClose(event);
+            break;
+
+          case KEYS.NUMBER_1:
+            event.preventDefault();
+            this.requestOpenImage(1, event);
+            break;
+
+          case KEYS.NUMBER_2:
+            event.preventDefault();
+            this.requestOpenImage(2, event);
+            break;
+
+          case KEYS.NUMBER_3:
+            event.preventDefault();
+            this.requestOpenImage(3, event);
+            break;
+
+          case KEYS.NUMBER_4:
+            event.preventDefault();
+            this.requestOpenImage(4, event);
+            break;
+
+          case KEYS.NUMBER_5:
+            event.preventDefault();
+            this.requestOpenImage(5, event);
             break;
           // A letter key rotates the image CCW
 
@@ -1651,12 +1679,14 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
       key: 'handleRotateCCWButtonClick',
       value: function handleRotateCCWButtonClick() {
         this.props.onRotateCCWRequest(event);
+        this.outerEl.current.focus();
       },
     },
     {
       key: 'handleRotateCWButtonClick',
       value: function handleRotateCWButtonClick() {
         this.props.onRotateCWRequest(event);
+        this.outerEl.current.focus();
       },
     },
     {
@@ -1664,10 +1694,7 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
       value: function handleZoomInButtonClick() {
         var nextZoomLevel = this.state.zoomLevel + ZOOM_BUTTON_INCREMENT_SIZE;
         this.changeZoom(nextZoomLevel);
-
-        if (nextZoomLevel === MAX_ZOOM_LEVEL) {
-          this.zoomOutBtn.current.focus();
-        }
+        this.outerEl.current.focus();
       },
     },
     {
@@ -1675,10 +1702,7 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
       value: function handleZoomOutButtonClick() {
         var nextZoomLevel = this.state.zoomLevel - ZOOM_BUTTON_INCREMENT_SIZE;
         this.changeZoom(nextZoomLevel);
-
-        if (nextZoomLevel === MIN_ZOOM_LEVEL) {
-          this.zoomInBtn.current.focus();
-        }
+        this.outerEl.current.focus();
       },
     },
     {
@@ -1885,13 +1909,13 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
         } else {
           this.keyCounter += 1;
           this.setState(nextState);
-          this.props.onRotateCWRequest(event);
+          this.props.onRotateCCWRequest(event);
         }
       },
     },
     {
-      key: 'requestMove',
-      value: function requestMove(direction, event) {
+      key: 'requestOpenImage',
+      value: function requestOpenImage(index, event) {
         var _this16 = this;
 
         // Reset the zoom level on image move
@@ -1908,6 +1932,36 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
           nextState.shouldAnimate = true;
           this.setTimeout(function() {
             return _this16.setState({
+              shouldAnimate: false,
+            });
+          }, this.props.animationDuration);
+        }
+
+        this.keyPressed = false;
+        this.moveRequested = true;
+        this.setState(nextState);
+        this.props.onOpenImageRequest(index, event);
+      },
+    },
+    {
+      key: 'requestMove',
+      value: function requestMove(direction, event) {
+        var _this17 = this;
+
+        // Reset the zoom level on image move
+        var nextState = {
+          zoomLevel: MIN_ZOOM_LEVEL,
+          offsetX: 0,
+          offsetY: 0,
+        }; // Enable animated states
+
+        if (
+          !this.props.animationDisabled &&
+          (!this.keyPressed || this.props.animationOnKeyInput)
+        ) {
+          nextState.shouldAnimate = true;
+          this.setTimeout(function() {
+            return _this17.setState({
               shouldAnimate: false,
             });
           }, this.props.animationDuration);
@@ -1954,7 +2008,7 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
     {
       key: 'render',
       value: function render() {
-        var _this17 = this;
+        var _this18 = this;
 
         var _this$props = this.props,
           animationDisabled = _this$props.animationDisabled,
@@ -1962,6 +2016,7 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
           clickOutsideToClose = _this$props.clickOutsideToClose,
           discourageDownloads = _this$props.discourageDownloads,
           enableZoom = _this$props.enableZoom,
+          enableRotation = _this$props.enableRotation,
           imageTitle = _this$props.imageTitle,
           nextSrc = _this$props.nextSrc,
           prevSrc = _this$props.prevSrc,
@@ -1997,11 +2052,11 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
 
         var addImage = function addImage(srcType, imageClass, transforms) {
           // Ignore types that have no source defined for their full size image
-          if (!_this17.props[srcType]) {
+          if (!_this18.props[srcType]) {
             return;
           }
 
-          var bestImageInfo = _this17.getBestImageForType(srcType);
+          var bestImageInfo = _this18.getBestImageForType(srcType);
 
           var imageStyle = _objectSpread2(
             {},
@@ -2029,14 +2084,14 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                 {
                   className: ''.concat(imageClass, ' ril__image ril-errored'),
                   style: imageStyle,
-                  key: _this17.props[srcType] + keyEndings[srcType],
+                  key: _this18.props[srcType] + keyEndings[srcType],
                 },
                 React__default.createElement(
                   'div',
                   {
                     className: 'ril__errorContainer',
                   },
-                  _this17.props.imageLoadErrorMessage
+                  _this18.props.imageLoadErrorMessage
                 )
               )
             );
@@ -2068,7 +2123,7 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                     ' ril__image ril-not-loaded'
                   ),
                   style: imageStyle,
-                  key: _this17.props[srcType] + keyEndings[srcType],
+                  key: _this18.props[srcType] + keyEndings[srcType],
                 },
                 React__default.createElement(
                   'div',
@@ -2094,8 +2149,8 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                     imageClass,
                     ' ril__image ril__imageDiscourager'
                   ),
-                  onDoubleClick: _this17.handleImageDoubleClick,
-                  onWheel: _this17.handleImageMouseWheel,
+                  onDoubleClick: _this18.handleImageDoubleClick,
+                  onWheel: _this18.handleImageMouseWheel,
                   style: imageStyle,
                   key: imageSrc + keyEndings[srcType],
                 },
@@ -2117,8 +2172,8 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                     : {},
                   {
                     className: ''.concat(imageClass, ' ril__image'),
-                    onDoubleClick: _this17.handleImageDoubleClick,
-                    onWheel: _this17.handleImageMouseWheel,
+                    onDoubleClick: _this18.handleImageDoubleClick,
+                    onWheel: _this18.handleImageMouseWheel,
                     onDragStart: function onDragStart(e) {
                       return e.preventDefault();
                     },
@@ -2189,8 +2244,8 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                 : undefined,
               onAfterOpen: function onAfterOpen() {
                 // Focus on the div with key handlers
-                if (_this17.outerEl.current) {
-                  _this17.outerEl.current.focus();
+                if (_this18.outerEl.current) {
+                  _this18.outerEl.current.focus();
                 }
 
                 _onAfterOpen();
@@ -2301,6 +2356,54 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                       button
                     );
                   }),
+                enableRotation &&
+                  React__default.createElement(
+                    'li',
+                    {
+                      className: 'ril-toolbar__item ril__toolbarItem',
+                    },
+                    React__default.createElement('button', {
+                      // Lightbox rotate CCW button
+                      type: 'button',
+                      key: 'rotate-CCW',
+                      'aria-label': this.props.zoomInLabel,
+                      className: [
+                        'ril-rotate-CCW',
+                        'ril__toolbarItemChild',
+                        'ril__builtinButton',
+                        'ril__rotateCCWButton',
+                      ].join(' '),
+                      ref: this.zoomInBtn,
+                      disabled: this.isAnimating(),
+                      onClick: !this.isAnimating()
+                        ? this.handleRotateCCWButtonClick
+                        : undefined,
+                    })
+                  ),
+                enableRotation &&
+                  React__default.createElement(
+                    'li',
+                    {
+                      className: 'ril-toolbar__item ril__toolbarItem',
+                    },
+                    React__default.createElement('button', {
+                      // Lightbox rotate CW button
+                      type: 'button',
+                      key: 'rotate-CW',
+                      'aria-label': this.props.zoomInLabel,
+                      className: [
+                        'ril-rotate-CW',
+                        'ril__toolbarItemChild',
+                        'ril__builtinButton',
+                        'ril__rotateCWButton',
+                      ].join(' '),
+                      ref: this.zoomInBtn,
+                      disabled: this.isAnimating(),
+                      onClick: !this.isAnimating()
+                        ? this.handleRotateCWButtonClick
+                        : undefined,
+                    })
+                  ),
                 enableZoom &&
                   React__default.createElement(
                     'li',
@@ -2456,6 +2559,7 @@ ReactImageLightbox.propTypes = {
   // Should change the parent state such that props.prevSrc becomes props.mainSrc,
   //  props.mainSrc becomes props.nextSrc, etc.
   onMovePrevRequest: PropTypes.func,
+  onOpenImageRequest: PropTypes.func,
   // Move to next image event
   // Should change the parent state such that props.nextSrc becomes props.mainSrc,
   //  props.mainSrc becomes props.prevSrc, etc.
@@ -2518,6 +2622,7 @@ ReactImageLightbox.propTypes = {
   clickOutsideToClose: PropTypes.bool,
   // Set to false to disable zoom functionality and hide zoom buttons
   enableZoom: PropTypes.bool,
+  enableRotation: PropTypes.bool,
   // Override props set on react-modal (https://github.com/reactjs/react-modal)
   reactModalProps: PropTypes.shape({}),
   // Aria-labels
@@ -2540,6 +2645,7 @@ ReactImageLightbox.defaultProps = {
   closeLabel: 'Close lightbox',
   discourageDownloads: false,
   enableZoom: true,
+  enableRotation: true,
   imagePadding: 10,
   imageCrossOrigin: null,
   keyRepeatKeyupBonus: 40,
@@ -2556,6 +2662,7 @@ ReactImageLightbox.defaultProps = {
   onMovePrevRequest: function onMovePrevRequest() {},
   onRotateCWRequest: function onRotateCWRequest() {},
   onRotateCCWRequest: function onRotateCCWRequest() {},
+  onOpenImageRequest: function onOpenImageRequest() {},
   prevLabel: 'Previous image',
   prevSrc: null,
   prevRotation: 0,

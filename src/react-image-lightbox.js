@@ -138,6 +138,7 @@ class ReactImageLightbox extends Component {
     this.requestMovePrev = this.requestMovePrev.bind(this);
     this.requestRotateCCW = this.requestRotateCCW.bind(this);
     this.requestRotateCW = this.requestRotateCW.bind(this);
+    this.requestOpenImage = this.requestOpenImage.bind(this);
   }
 
   // eslint-disable-next-line camelcase
@@ -589,6 +590,27 @@ class ReactImageLightbox extends Component {
       case KEYS.SPACE:
         event.preventDefault();
         this.requestClose(event);
+        break;
+
+      case KEYS.NUMBER_1:
+        event.preventDefault();
+        this.requestOpenImage(1, event);
+        break;
+      case KEYS.NUMBER_2:
+        event.preventDefault();
+        this.requestOpenImage(2, event);
+        break;
+      case KEYS.NUMBER_3:
+        event.preventDefault();
+        this.requestOpenImage(3, event);
+        break;
+      case KEYS.NUMBER_4:
+        event.preventDefault();
+        this.requestOpenImage(4, event);
+        break;
+      case KEYS.NUMBER_5:
+        event.preventDefault();
+        this.requestOpenImage(5, event);
         break;
 
       // A letter key rotates the image CCW
@@ -1094,25 +1116,29 @@ class ReactImageLightbox extends Component {
 
   handleRotateCCWButtonClick() {
     this.props.onRotateCCWRequest(event);
+    this.outerEl.current.focus();
   }
 
   handleRotateCWButtonClick() {
     this.props.onRotateCWRequest(event);
+    this.outerEl.current.focus();
   }
 
   handleZoomInButtonClick() {
     const nextZoomLevel = this.state.zoomLevel + ZOOM_BUTTON_INCREMENT_SIZE;
     this.changeZoom(nextZoomLevel);
+    this.outerEl.current.focus();
     if (nextZoomLevel === MAX_ZOOM_LEVEL) {
-      this.zoomOutBtn.current.focus();
+      //this.zoomOutBtn.current.focus();
     }
   }
 
   handleZoomOutButtonClick() {
     const nextZoomLevel = this.state.zoomLevel - ZOOM_BUTTON_INCREMENT_SIZE;
     this.changeZoom(nextZoomLevel);
+    this.outerEl.current.focus();
     if (nextZoomLevel === MIN_ZOOM_LEVEL) {
-      this.zoomInBtn.current.focus();
+      //this.zoomInBtn.current.focus();
     }
   }
 
@@ -1281,8 +1307,35 @@ class ReactImageLightbox extends Component {
     } else {
       this.keyCounter += 1;
       this.setState(nextState);
-      this.props.onRotateCWRequest(event);
+      this.props.onRotateCCWRequest(event);
     }
+  }
+
+  requestOpenImage(index, event) {
+    // Reset the zoom level on image move
+    const nextState = {
+      zoomLevel: MIN_ZOOM_LEVEL,
+      offsetX: 0,
+      offsetY: 0,
+    };
+
+    // Enable animated states
+    if (
+      !this.props.animationDisabled &&
+      (!this.keyPressed || this.props.animationOnKeyInput)
+    ) {
+      nextState.shouldAnimate = true;
+      this.setTimeout(
+        () => this.setState({ shouldAnimate: false }),
+        this.props.animationDuration
+      );
+    }
+    this.keyPressed = false;
+
+    this.moveRequested = true;
+
+    this.setState(nextState);
+    this.props.onOpenImageRequest(index, event);
   }
 
   requestMove(direction, event) {
@@ -1346,6 +1399,7 @@ class ReactImageLightbox extends Component {
       clickOutsideToClose,
       discourageDownloads,
       enableZoom,
+      enableRotation,
       imageTitle,
       nextSrc,
       prevSrc,
@@ -1615,6 +1669,51 @@ class ReactImageLightbox extends Component {
                   </li>
                 ))}
 
+              {enableRotation && (
+                <li className="ril-toolbar__item ril__toolbarItem">
+                  <button // Lightbox rotate CCW button
+                    type="button"
+                    key="rotate-CCW"
+                    aria-label={this.props.zoomInLabel}
+                    className={[
+                      'ril-rotate-CCW',
+                      'ril__toolbarItemChild',
+                      'ril__builtinButton',
+                      'ril__rotateCCWButton',
+                    ].join(' ')}
+                    ref={this.zoomInBtn}
+                    disabled={this.isAnimating()}
+                    onClick={
+                      !this.isAnimating()
+                        ? this.handleRotateCCWButtonClick
+                        : undefined
+                    }
+                  />
+                </li>
+              )}
+              {enableRotation && (
+                <li className="ril-toolbar__item ril__toolbarItem">
+                  <button // Lightbox rotate CW button
+                    type="button"
+                    key="rotate-CW"
+                    aria-label={this.props.zoomInLabel}
+                    className={[
+                      'ril-rotate-CW',
+                      'ril__toolbarItemChild',
+                      'ril__builtinButton',
+                      'ril__rotateCWButton',
+                    ].join(' ')}
+                    ref={this.zoomInBtn}
+                    disabled={this.isAnimating()}
+                    onClick={
+                      !this.isAnimating()
+                        ? this.handleRotateCWButtonClick
+                        : undefined
+                    }
+                  />
+                </li>
+              )}
+
               {enableZoom && (
                 <li className="ril-toolbar__item ril__toolbarItem">
                   <button // Lightbox zoom in button
@@ -1746,6 +1845,7 @@ ReactImageLightbox.propTypes = {
   // Should change the parent state such that props.prevSrc becomes props.mainSrc,
   //  props.mainSrc becomes props.nextSrc, etc.
   onMovePrevRequest: PropTypes.func,
+  onOpenImageRequest: PropTypes.func,
 
   // Move to next image event
   // Should change the parent state such that props.nextSrc becomes props.mainSrc,
@@ -1835,6 +1935,8 @@ ReactImageLightbox.propTypes = {
   // Set to false to disable zoom functionality and hide zoom buttons
   enableZoom: PropTypes.bool,
 
+  enableRotation: PropTypes.bool,
+
   // Override props set on react-modal (https://github.com/reactjs/react-modal)
   reactModalProps: PropTypes.shape({}),
 
@@ -1860,6 +1962,7 @@ ReactImageLightbox.defaultProps = {
   closeLabel: 'Close lightbox',
   discourageDownloads: false,
   enableZoom: true,
+  enableRotation: true,
   imagePadding: 10,
   imageCrossOrigin: null,
   keyRepeatKeyupBonus: 40,
@@ -1876,6 +1979,7 @@ ReactImageLightbox.defaultProps = {
   onMovePrevRequest: () => {},
   onRotateCWRequest: () => {},
   onRotateCCWRequest: () => {},
+  onOpenImageRequest: () => {},
   prevLabel: 'Previous image',
   prevSrc: null,
   prevRotation: 0,

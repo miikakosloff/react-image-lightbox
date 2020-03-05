@@ -103,12 +103,16 @@ class App extends Component {
     this.state = {
       index: 0,
       isOpen: false,
+      imageRotations: images.map(() => 0),
     };
 
     this.openLightbox = this.openLightbox.bind(this);
     this.closeLightbox = this.closeLightbox.bind(this);
     this.moveNext = this.moveNext.bind(this);
     this.movePrev = this.movePrev.bind(this);
+    this.openImage = this.openImage.bind(this);
+    this.rotateCCW = this.rotateCCW.bind(this);
+    this.rotateCW = this.rotateCW.bind(this);
   }
 
   openLightbox() {
@@ -119,10 +123,36 @@ class App extends Component {
     this.setState({ isOpen: false });
   }
 
+  openImage(i) {
+    this.setState({
+      index: (i - 1) % images.length,
+    });
+  }
+
   moveNext() {
     this.setState(prevState => ({
       index: (prevState.index + 1) % images.length,
     }));
+  }
+
+  rotateCW() {
+    this.setState(prevState => {
+      var rotations = prevState.imageRotations;
+      rotations[prevState.index] = (rotations[prevState.index] + 1) % 4;
+      return {
+        imageRotations: rotations,
+      };
+    });
+  }
+
+  rotateCCW() {
+    this.setState(prevState => {
+      var rotations = prevState.imageRotations;
+      rotations[prevState.index] = (rotations[prevState.index] + 3) % 4;
+      return {
+        imageRotations: rotations,
+      };
+    });
   }
 
   movePrev() {
@@ -137,7 +167,7 @@ class App extends Component {
       lightbox = (
         <Lightbox
           mainSrc={images[this.state.index]}
-          mainRotation={1}
+          mainRotation={this.state.imageRotations[this.state.index]}
           nextSrc={images[(this.state.index + 1) % images.length]}
           prevSrc={
             images[(this.state.index + images.length - 1) % images.length]
@@ -150,6 +180,15 @@ class App extends Component {
           onCloseRequest={this.closeLightbox}
           onMovePrevRequest={this.movePrev}
           onMoveNextRequest={this.moveNext}
+          onOpenImageRequest={i => this.openImage(i)}
+          onRotateCWRequest={() => {
+            console.log('Rotate CW');
+            this.rotateCW();
+          }}
+          onRotateCCWRequest={() => {
+            console.log('Rotate CCW');
+            this.rotateCCW();
+          }}
           onImageLoadError={App.onImageLoadError}
           imageTitle={titles[this.state.index]}
           imageCaption={captions[this.state.index]}

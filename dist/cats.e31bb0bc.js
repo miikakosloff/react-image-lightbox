@@ -39449,6 +39449,9 @@ object-assign
             _this.requestRotateCW = _this.requestRotateCW.bind(
               _assertThisInitialized(_this)
             );
+            _this.requestOpenImage = _this.requestOpenImage.bind(
+              _assertThisInitialized(_this)
+            );
             return _this;
           } // eslint-disable-next-line camelcase
 
@@ -39994,6 +39997,31 @@ object-assign
                   case _constant.KEYS.SPACE:
                     event.preventDefault();
                     this.requestClose(event);
+                    break;
+
+                  case _constant.KEYS.NUMBER_1:
+                    event.preventDefault();
+                    this.requestOpenImage(1, event);
+                    break;
+
+                  case _constant.KEYS.NUMBER_2:
+                    event.preventDefault();
+                    this.requestOpenImage(2, event);
+                    break;
+
+                  case _constant.KEYS.NUMBER_3:
+                    event.preventDefault();
+                    this.requestOpenImage(3, event);
+                    break;
+
+                  case _constant.KEYS.NUMBER_4:
+                    event.preventDefault();
+                    this.requestOpenImage(4, event);
+                    break;
+
+                  case _constant.KEYS.NUMBER_5:
+                    event.preventDefault();
+                    this.requestOpenImage(5, event);
                     break;
                   // A letter key rotates the image CCW
 
@@ -40656,12 +40684,14 @@ object-assign
               key: 'handleRotateCCWButtonClick',
               value: function handleRotateCCWButtonClick() {
                 this.props.onRotateCCWRequest(event);
+                this.outerEl.current.focus();
               },
             },
             {
               key: 'handleRotateCWButtonClick',
               value: function handleRotateCWButtonClick() {
                 this.props.onRotateCWRequest(event);
+                this.outerEl.current.focus();
               },
             },
             {
@@ -40670,9 +40700,10 @@ object-assign
                 var nextZoomLevel =
                   this.state.zoomLevel + _constant.ZOOM_BUTTON_INCREMENT_SIZE;
                 this.changeZoom(nextZoomLevel);
+                this.outerEl.current.focus();
 
                 if (nextZoomLevel === _constant.MAX_ZOOM_LEVEL) {
-                  this.zoomOutBtn.current.focus();
+                  //this.zoomOutBtn.current.focus();
                 }
               },
             },
@@ -40682,9 +40713,10 @@ object-assign
                 var nextZoomLevel =
                   this.state.zoomLevel - _constant.ZOOM_BUTTON_INCREMENT_SIZE;
                 this.changeZoom(nextZoomLevel);
+                this.outerEl.current.focus();
 
                 if (nextZoomLevel === _constant.MIN_ZOOM_LEVEL) {
-                  this.zoomInBtn.current.focus();
+                  //this.zoomInBtn.current.focus();
                 }
               },
             },
@@ -40895,13 +40927,13 @@ object-assign
                 } else {
                   this.keyCounter += 1;
                   this.setState(nextState);
-                  this.props.onRotateCWRequest(event);
+                  this.props.onRotateCCWRequest(event);
                 }
               },
             },
             {
-              key: 'requestMove',
-              value: function requestMove(direction, event) {
+              key: 'requestOpenImage',
+              value: function requestOpenImage(index, event) {
                 var _this16 = this;
 
                 // Reset the zoom level on image move
@@ -40918,6 +40950,36 @@ object-assign
                   nextState.shouldAnimate = true;
                   this.setTimeout(function() {
                     return _this16.setState({
+                      shouldAnimate: false,
+                    });
+                  }, this.props.animationDuration);
+                }
+
+                this.keyPressed = false;
+                this.moveRequested = true;
+                this.setState(nextState);
+                this.props.onOpenImageRequest(index, event);
+              },
+            },
+            {
+              key: 'requestMove',
+              value: function requestMove(direction, event) {
+                var _this17 = this;
+
+                // Reset the zoom level on image move
+                var nextState = {
+                  zoomLevel: _constant.MIN_ZOOM_LEVEL,
+                  offsetX: 0,
+                  offsetY: 0,
+                }; // Enable animated states
+
+                if (
+                  !this.props.animationDisabled &&
+                  (!this.keyPressed || this.props.animationOnKeyInput)
+                ) {
+                  nextState.shouldAnimate = true;
+                  this.setTimeout(function() {
+                    return _this17.setState({
                       shouldAnimate: false,
                     });
                   }, this.props.animationDuration);
@@ -40964,7 +41026,7 @@ object-assign
             {
               key: 'render',
               value: function render() {
-                var _this17 = this;
+                var _this18 = this;
 
                 var _this$props = this.props,
                   animationDisabled = _this$props.animationDisabled,
@@ -40972,6 +41034,7 @@ object-assign
                   clickOutsideToClose = _this$props.clickOutsideToClose,
                   discourageDownloads = _this$props.discourageDownloads,
                   enableZoom = _this$props.enableZoom,
+                  enableRotation = _this$props.enableRotation,
                   imageTitle = _this$props.imageTitle,
                   nextSrc = _this$props.nextSrc,
                   prevSrc = _this$props.prevSrc,
@@ -41011,11 +41074,11 @@ object-assign
                   transforms
                 ) {
                   // Ignore types that have no source defined for their full size image
-                  if (!_this17.props[srcType]) {
+                  if (!_this18.props[srcType]) {
                     return;
                   }
 
-                  var bestImageInfo = _this17.getBestImageForType(srcType);
+                  var bestImageInfo = _this18.getBestImageForType(srcType);
 
                   var imageStyle = _objectSpread(
                     {},
@@ -41046,14 +41109,14 @@ object-assign
                             ' ril__image ril-errored'
                           ),
                           style: imageStyle,
-                          key: _this17.props[srcType] + keyEndings[srcType],
+                          key: _this18.props[srcType] + keyEndings[srcType],
                         },
                         _react.default.createElement(
                           'div',
                           {
                             className: 'ril__errorContainer',
                           },
-                          _this17.props.imageLoadErrorMessage
+                          _this18.props.imageLoadErrorMessage
                         )
                       )
                     );
@@ -41086,7 +41149,7 @@ object-assign
                             ' ril__image ril-not-loaded'
                           ),
                           style: imageStyle,
-                          key: _this17.props[srcType] + keyEndings[srcType],
+                          key: _this18.props[srcType] + keyEndings[srcType],
                         },
                         _react.default.createElement(
                           'div',
@@ -41112,8 +41175,8 @@ object-assign
                             imageClass,
                             ' ril__image ril__imageDiscourager'
                           ),
-                          onDoubleClick: _this17.handleImageDoubleClick,
-                          onWheel: _this17.handleImageMouseWheel,
+                          onDoubleClick: _this18.handleImageDoubleClick,
+                          onWheel: _this18.handleImageMouseWheel,
                           style: imageStyle,
                           key: imageSrc + keyEndings[srcType],
                         },
@@ -41136,8 +41199,8 @@ object-assign
                             : {},
                           {
                             className: ''.concat(imageClass, ' ril__image'),
-                            onDoubleClick: _this17.handleImageDoubleClick,
-                            onWheel: _this17.handleImageMouseWheel,
+                            onDoubleClick: _this18.handleImageDoubleClick,
+                            onWheel: _this18.handleImageMouseWheel,
                             onDragStart: function onDragStart(e) {
                               return e.preventDefault();
                             },
@@ -41208,8 +41271,8 @@ object-assign
                         : undefined,
                       onAfterOpen: function onAfterOpen() {
                         // Focus on the div with key handlers
-                        if (_this17.outerEl.current) {
-                          _this17.outerEl.current.focus();
+                        if (_this18.outerEl.current) {
+                          _this18.outerEl.current.focus();
                         }
 
                         _onAfterOpen();
@@ -41328,6 +41391,54 @@ object-assign
                               button
                             );
                           }),
+                        enableRotation &&
+                          _react.default.createElement(
+                            'li',
+                            {
+                              className: 'ril-toolbar__item ril__toolbarItem',
+                            },
+                            _react.default.createElement('button', {
+                              // Lightbox rotate CCW button
+                              type: 'button',
+                              key: 'rotate-CCW',
+                              'aria-label': this.props.zoomInLabel,
+                              className: [
+                                'ril-rotate-CCW',
+                                'ril__toolbarItemChild',
+                                'ril__builtinButton',
+                                'ril__rotateCCWButton',
+                              ].join(' '),
+                              ref: this.zoomInBtn,
+                              disabled: this.isAnimating(),
+                              onClick: !this.isAnimating()
+                                ? this.handleRotateCCWButtonClick
+                                : undefined,
+                            })
+                          ),
+                        enableRotation &&
+                          _react.default.createElement(
+                            'li',
+                            {
+                              className: 'ril-toolbar__item ril__toolbarItem',
+                            },
+                            _react.default.createElement('button', {
+                              // Lightbox rotate CW button
+                              type: 'button',
+                              key: 'rotate-CW',
+                              'aria-label': this.props.zoomInLabel,
+                              className: [
+                                'ril-rotate-CW',
+                                'ril__toolbarItemChild',
+                                'ril__builtinButton',
+                                'ril__rotateCWButton',
+                              ].join(' '),
+                              ref: this.zoomInBtn,
+                              disabled: this.isAnimating(),
+                              onClick: !this.isAnimating()
+                                ? this.handleRotateCWButtonClick
+                                : undefined,
+                            })
+                          ),
                         enableZoom &&
                           _react.default.createElement(
                             'li',
@@ -41488,6 +41599,7 @@ object-assign
           // Should change the parent state such that props.prevSrc becomes props.mainSrc,
           //  props.mainSrc becomes props.nextSrc, etc.
           onMovePrevRequest: _propTypes.default.func,
+          onOpenImageRequest: _propTypes.default.func,
           // Move to next image event
           // Should change the parent state such that props.nextSrc becomes props.mainSrc,
           //  props.mainSrc becomes props.prevSrc, etc.
@@ -41550,6 +41662,7 @@ object-assign
           clickOutsideToClose: _propTypes.default.bool,
           // Set to false to disable zoom functionality and hide zoom buttons
           enableZoom: _propTypes.default.bool,
+          enableRotation: _propTypes.default.bool,
           // Override props set on react-modal (https://github.com/reactjs/react-modal)
           reactModalProps: _propTypes.default.shape({}),
           // Aria-labels
@@ -41572,6 +41685,7 @@ object-assign
           closeLabel: 'Close lightbox',
           discourageDownloads: false,
           enableZoom: true,
+          enableRotation: true,
           imagePadding: 10,
           imageCrossOrigin: null,
           keyRepeatKeyupBonus: 40,
@@ -41588,6 +41702,7 @@ object-assign
           onMovePrevRequest: function onMovePrevRequest() {},
           onRotateCWRequest: function onRotateCWRequest() {},
           onRotateCCWRequest: function onRotateCCWRequest() {},
+          onOpenImageRequest: function onOpenImageRequest() {},
           prevLabel: 'Previous image',
           prevSrc: null,
           prevRotation: 0,
@@ -42037,6 +42152,9 @@ object-assign
             _this.state = {
               index: 0,
               isOpen: false,
+              imageRotations: images.map(function() {
+                return 0;
+              }),
             };
             _this.openLightbox = _this.openLightbox.bind(
               _assertThisInitialized(_this)
@@ -42046,6 +42164,13 @@ object-assign
             );
             _this.moveNext = _this.moveNext.bind(_assertThisInitialized(_this));
             _this.movePrev = _this.movePrev.bind(_assertThisInitialized(_this));
+            _this.openImage = _this.openImage.bind(
+              _assertThisInitialized(_this)
+            );
+            _this.rotateCCW = _this.rotateCCW.bind(
+              _assertThisInitialized(_this)
+            );
+            _this.rotateCW = _this.rotateCW.bind(_assertThisInitialized(_this));
             return _this;
           }
 
@@ -42067,11 +42192,45 @@ object-assign
               },
             },
             {
+              key: 'openImage',
+              value: function openImage(i) {
+                this.setState({
+                  index: (i - 1) % images.length,
+                });
+              },
+            },
+            {
               key: 'moveNext',
               value: function moveNext() {
                 this.setState(function(prevState) {
                   return {
                     index: (prevState.index + 1) % images.length,
+                  };
+                });
+              },
+            },
+            {
+              key: 'rotateCW',
+              value: function rotateCW() {
+                this.setState(function(prevState) {
+                  var rotations = prevState.imageRotations;
+                  rotations[prevState.index] =
+                    (rotations[prevState.index] + 1) % 4;
+                  return {
+                    imageRotations: rotations,
+                  };
+                });
+              },
+            },
+            {
+              key: 'rotateCCW',
+              value: function rotateCCW() {
+                this.setState(function(prevState) {
+                  var rotations = prevState.imageRotations;
+                  rotations[prevState.index] =
+                    (rotations[prevState.index] + 3) % 4;
+                  return {
+                    imageRotations: rotations,
                   };
                 });
               },
@@ -42090,12 +42249,14 @@ object-assign
             {
               key: 'render',
               value: function render() {
+                var _this2 = this;
+
                 var lightbox;
 
                 if (this.state.isOpen) {
                   lightbox = _react.default.createElement(_src.default, {
                     mainSrc: images[this.state.index],
-                    mainRotation: 1,
+                    mainRotation: this.state.imageRotations[this.state.index],
                     nextSrc: images[(this.state.index + 1) % images.length],
                     prevSrc:
                       images[
@@ -42111,6 +42272,19 @@ object-assign
                     onCloseRequest: this.closeLightbox,
                     onMovePrevRequest: this.movePrev,
                     onMoveNextRequest: this.moveNext,
+                    onOpenImageRequest: function onOpenImageRequest(i) {
+                      return _this2.openImage(i);
+                    },
+                    onRotateCWRequest: function onRotateCWRequest() {
+                      console.log('Rotate CW');
+
+                      _this2.rotateCW();
+                    },
+                    onRotateCCWRequest: function onRotateCCWRequest() {
+                      console.log('Rotate CCW');
+
+                      _this2.rotateCCW();
+                    },
                     onImageLoadError: App.onImageLoadError,
                     imageTitle: titles[this.state.index],
                     imageCaption: captions[this.state.index],
@@ -42385,7 +42559,7 @@ object-assign
           var hostname = '' || location.hostname;
           var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
           var ws = new WebSocket(
-            protocol + '://' + hostname + ':' + '56376' + '/'
+            protocol + '://' + hostname + ':' + '60259' + '/'
           );
 
           ws.onmessage = function(event) {
