@@ -137,6 +137,7 @@ class App extends Component {
       lightbox = (
         <Lightbox
           mainSrc={images[this.state.index]}
+          mainRotation={1}
           nextSrc={images[(this.state.index + 1) % images.length]}
           prevSrc={
             images[(this.state.index + images.length - 1) % images.length]

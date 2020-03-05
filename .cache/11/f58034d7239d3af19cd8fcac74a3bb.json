@@ -1,0 +1,22 @@
+{
+  "id": "../shared/favicon/favicon-32x32.png",
+  "dependencies": [
+    {
+      "name": "/Users/miikakosloff/Projektit/caruna/react-image-lightbox/.babelrc",
+      "includedInParent": true,
+      "mtime": 1583395632669
+    },
+    {
+      "name": "/Users/miikakosloff/Projektit/caruna/react-image-lightbox/package.json",
+      "includedInParent": true,
+      "mtime": 1583395632681
+    }
+  ],
+  "generated": {
+    "js": "module.exports = \"/c1ed76f13388d73876a49605e5a2a10b.png\";"
+  },
+  "sourceMaps": null,
+  "error": null,
+  "hash": "bfef124c16452edfa2d5da8d947d6337",
+  "cacheData": { "env": {} }
+}

@@ -129,6 +129,8 @@ class ReactImageLightbox extends Component {
     this.handleWindowResize = this.handleWindowResize.bind(this);
     this.handleZoomInButtonClick = this.handleZoomInButtonClick.bind(this);
     this.handleZoomOutButtonClick = this.handleZoomOutButtonClick.bind(this);
+    this.handleRotateCCWButtonClick = this.handleRotateCCWButtonClick.bind(this);
+    this.handleRotateCWButtonClick = this.handleRotateCWButtonClick.bind(this);
     this.requestClose = this.requestClose.bind(this);
     this.requestMoveNext = this.requestMoveNext.bind(this);
     this.requestMovePrev = this.requestMovePrev.bind(this);
@@ -567,7 +569,7 @@ class ReactImageLightbox extends Component {
     const currentTime = new Date();
     if (
       currentTime.getTime() - this.lastKeyDownTime <
-        this.props.keyRepeatLimit &&
+      this.props.keyRepeatLimit &&
       keyCode !== KEYS.ESC
     ) {
       return;
@@ -1088,6 +1090,14 @@ class ReactImageLightbox extends Component {
     this.resizeTimeout = this.setTimeout(this.forceUpdate.bind(this), 100);
   }
 
+  handleRotateCCWButtonClick() {
+    this.props.onRotateCCWRequest(event);
+  }
+
+  handleRotateCWButtonClick() {
+    this.props.onRotateCWRequest(event);
+  }
+
   handleZoomInButtonClick() {
     const nextZoomLevel = this.state.zoomLevel + ZOOM_BUTTON_INCREMENT_SIZE;
     this.changeZoom(nextZoomLevel);
@@ -1342,6 +1352,7 @@ class ReactImageLightbox extends Component {
       onAfterOpen,
       imageCrossOrigin,
       reactModalProps,
+      mainRotation,
     } = this.props;
     const {
       zoomLevel,
@@ -1384,6 +1395,8 @@ class ReactImageLightbox extends Component {
           ...bestImageInfo,
         }),
       };
+
+      imageStyle.transform = `rotate(${90 * mainRotation}deg)`;
 
       if (zoomLevel > MIN_ZOOM_LEVEL) {
         imageStyle.cursor = 'move';
@@ -1531,7 +1544,7 @@ class ReactImageLightbox extends Component {
           // Floating modal with closing animations
           className={`ril-outer ril__outer ril__outerAnimating ${
             this.props.wrapperClassName
-          } ${isClosing ? 'ril-closing ril__outerClosing' : ''}`}
+            } ${isClosing ? 'ril-closing ril__outerClosing' : ''}`}
           style={{
             transition: `opacity ${animationDuration}ms`,
             animationDuration: `${animationDuration}ms`,
@@ -1691,14 +1704,17 @@ ReactImageLightbox.propTypes = {
 
   // Main display image url
   mainSrc: PropTypes.string.isRequired, // eslint-disable-line react/no-unused-prop-types
+  mainRotation: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
 
   // Previous display image url (displayed to the left)
   // If left undefined, movePrev actions will not be performed, and the button not displayed
   prevSrc: PropTypes.string,
+  prevRotation: PropTypes.number,
 
   // Next display image url (displayed to the right)
   // If left undefined, moveNext actions will not be performed, and the button not displayed
   nextSrc: PropTypes.string,
+  nextRotation: PropTypes.number,
 
   //-----------------------------
   // Image thumbnail sources
@@ -1846,16 +1862,18 @@ ReactImageLightbox.defaultProps = {
   mainSrcThumbnail: null,
   nextLabel: 'Next image',
   nextSrc: null,
+  nextRotation: 0,
   nextSrcThumbnail: null,
-  onAfterOpen: () => {},
-  onImageLoadError: () => {},
-  onImageLoad: () => {},
-  onMoveNextRequest: () => {},
-  onMovePrevRequest: () => {},
-  onRotateCWRequest: () => {},
-  onRotateCCWRequest: () => {},
+  onAfterOpen: () => { },
+  onImageLoadError: () => { },
+  onImageLoad: () => { },
+  onMoveNextRequest: () => { },
+  onMovePrevRequest: () => { },
+  onRotateCWRequest: () => { },
+  onRotateCCWRequest: () => { },
   prevLabel: 'Previous image',
   prevSrc: null,
+  prevRotation: 0,
   prevSrcThumbnail: null,
   reactModalStyle: {},
   wrapperClassName: '',
