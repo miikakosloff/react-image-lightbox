@@ -60,7 +60,7 @@ class ReactImageLightbox extends Component {
   }
 
   // Request to transition to the previous image
-  static getTransform({ x = 0, y = 0, zoom = 1, width, targetWidth }) {
+  static getTransform({ x = 0, y = 0, zoom = 1, width, targetWidth, angle }) {
     let nextX = x;
     const windowWidth = getWindowWidth();
     if (width > windowWidth) {
@@ -69,7 +69,7 @@ class ReactImageLightbox extends Component {
     const scaleFactor = zoom * (targetWidth / width);
 
     return {
-      transform: `translate3d(${nextX}px,${y}px,0) scale3d(${scaleFactor},${scaleFactor},1)`,
+      transform: `translate3d(${nextX}px,${y}px,0) scale3d(${scaleFactor},${scaleFactor},1) rotate(${angle}deg)`,
     };
   }
 
@@ -1495,7 +1495,7 @@ class ReactImageLightbox extends Component {
       x: -1 * offsetX,
       y: -1 * offsetY,
       zoom: zoomMultiplier,
-      transform: 'rotate(' + 90 * mainRotation + 'deg)',
+      angle: 90 * mainRotation,
     });
     // Previous Image (displayed on the left)
     addImage('prevSrc', 'ril-image-prev ril__imagePrev', {

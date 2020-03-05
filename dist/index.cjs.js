@@ -384,7 +384,8 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
           _ref$zoom = _ref.zoom,
           zoom = _ref$zoom === void 0 ? 1 : _ref$zoom,
           width = _ref.width,
-          targetWidth = _ref.targetWidth;
+          targetWidth = _ref.targetWidth,
+          angle = _ref.angle;
         var nextX = x;
         var windowWidth = getWindowWidth();
 
@@ -398,7 +399,8 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
             .concat(nextX, 'px,')
             .concat(y, 'px,0) scale3d(')
             .concat(scaleFactor, ',')
-            .concat(scaleFactor, ',1)'),
+            .concat(scaleFactor, ',1) rotate(')
+            .concat(angle, 'deg)'),
         };
       },
     },
@@ -2145,7 +2147,7 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
           x: -1 * offsetX,
           y: -1 * offsetY,
           zoom: zoomMultiplier,
-          transform: 'rotate(' + 90 * mainRotation + 'deg)',
+          angle: 90 * mainRotation,
         }); // Previous Image (displayed on the left)
 
         addImage('prevSrc', 'ril-image-prev ril__imagePrev', {
