@@ -1912,8 +1912,8 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
       }, // Request to rotate image counterclockwise
     },
     {
-      key: 'requestRotateCW',
-      value: function requestRotateCW(event) {
+      key: 'requestRotateCCW',
+      value: function requestRotateCCW(event) {
         this.requestRotate('CCW', event);
       }, // Request to transition to the next image
     },

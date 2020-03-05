@@ -1313,7 +1313,7 @@ class ReactImageLightbox extends Component {
   }
 
   // Request to rotate image counterclockwise
-  requestRotateCW(event) {
+  requestRotateCCW(event) {
     this.requestRotate('CCW', event);
   }
 
