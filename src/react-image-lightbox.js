@@ -590,13 +590,13 @@ class ReactImageLightbox extends Component {
       // A letter key rotates the image CCW
       case KEYS.LETTER_A:
         event.preventDefault();
-
+        this.requestRotateCCW(event);
         break;
 
       // D letter key rotates the image CW
       case KEYS.LETTER_D:
         event.preventDefault();
-
+        this.requestRotateCW(event);
         break;
 
       // Left arrow key moves to previous image

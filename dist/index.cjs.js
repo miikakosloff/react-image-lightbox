@@ -310,8 +310,8 @@ var KEYS = {
   LEFT_ARROW: 37,
   RIGHT_ARROW: 39,
   SPACE: 32,
-  LETTER_A: 38,
-  LETTER_D: 40,
+  LETTER_A: 65,
+  LETTER_D: 68,
   NUMBER_1: 49,
   NUMBER_2: 50,
   NUMBER_3: 51,
@@ -1021,11 +1021,13 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
 
           case KEYS.LETTER_A:
             event.preventDefault();
+            this.requestRotateCCW(event);
             break;
           // D letter key rotates the image CW
 
           case KEYS.LETTER_D:
             event.preventDefault();
+            this.requestRotateCW(event);
             break;
           // Left arrow key moves to previous image
 
