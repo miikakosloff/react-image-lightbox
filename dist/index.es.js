@@ -300,6 +300,14 @@ var KEYS = {
   ESC: 27,
   LEFT_ARROW: 37,
   RIGHT_ARROW: 39,
+  SPACE: 32,
+  LETTER_A: 65,
+  LETTER_D: 68,
+  NUMBER_1: 49,
+  NUMBER_2: 50,
+  NUMBER_3: 51,
+  NUMBER_4: 52,
+  NUMBER_5: 53,
 }; // Actions
 
 var ACTION_NONE = 0;
@@ -478,6 +486,12 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
       _assertThisInitialized(_this)
     );
     _this.requestMovePrev = _this.requestMovePrev.bind(
+      _assertThisInitialized(_this)
+    );
+    _this.requestRotateCCW = _this.requestRotateCCW.bind(
+      _assertThisInitialized(_this)
+    );
+    _this.requestRotateCW = _this.requestRotateCW.bind(
       _assertThisInitialized(_this)
     );
     return _this;
@@ -987,6 +1001,22 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
           case KEYS.ESC:
             event.preventDefault();
             this.requestClose(event);
+            break;
+          // SPACE key closes the lightbox
+
+          case KEYS.SPACE:
+            event.preventDefault();
+            this.requestClose(event);
+            break;
+          // A letter key rotates the image CCW
+
+          case KEYS.LETTER_A:
+            event.preventDefault();
+            break;
+          // D letter key rotates the image CW
+
+          case KEYS.LETTER_D:
+            event.preventDefault();
             break;
           // Left arrow key moves to previous image
 
@@ -1791,8 +1821,8 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
       },
     },
     {
-      key: 'requestMove',
-      value: function requestMove(direction, event) {
+      key: 'requestRotate',
+      value: function requestRotate(direction, event) {
         var _this15 = this;
 
         // Reset the zoom level on image move
@@ -1815,6 +1845,44 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
         }
 
         this.keyPressed = false;
+        this.rotateRequested = true;
+
+        if (direction === 'CW') {
+          this.keyCounter -= 1;
+          this.setState(nextState);
+          this.props.onRotateCWRequest(event);
+        } else {
+          this.keyCounter += 1;
+          this.setState(nextState);
+          this.props.onRotateCWRequest(event);
+        }
+      },
+    },
+    {
+      key: 'requestMove',
+      value: function requestMove(direction, event) {
+        var _this16 = this;
+
+        // Reset the zoom level on image move
+        var nextState = {
+          zoomLevel: MIN_ZOOM_LEVEL,
+          offsetX: 0,
+          offsetY: 0,
+        }; // Enable animated states
+
+        if (
+          !this.props.animationDisabled &&
+          (!this.keyPressed || this.props.animationOnKeyInput)
+        ) {
+          nextState.shouldAnimate = true;
+          this.setTimeout(function() {
+            return _this16.setState({
+              shouldAnimate: false,
+            });
+          }, this.props.animationDuration);
+        }
+
+        this.keyPressed = false;
         this.moveRequested = true;
 
         if (direction === 'prev') {
@@ -1826,6 +1894,18 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
           this.setState(nextState);
           this.props.onMoveNextRequest(event);
         }
+      }, // Request to rotate image clocwise
+    },
+    {
+      key: 'requestRotateCW',
+      value: function requestRotateCW(event) {
+        this.requestRotate('CW', event);
+      }, // Request to rotate image counterclockwise
+    },
+    {
+      key: 'requestRotateCW',
+      value: function requestRotateCW(event) {
+        this.requestRotate('CCW', event);
       }, // Request to transition to the next image
     },
     {
@@ -1843,7 +1923,7 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
     {
       key: 'render',
       value: function render() {
-        var _this16 = this;
+        var _this17 = this;
 
         var _this$props = this.props,
           animationDisabled = _this$props.animationDisabled,
@@ -1885,11 +1965,11 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
 
         var addImage = function addImage(srcType, imageClass, transforms) {
           // Ignore types that have no source defined for their full size image
-          if (!_this16.props[srcType]) {
+          if (!_this17.props[srcType]) {
             return;
           }
 
-          var bestImageInfo = _this16.getBestImageForType(srcType);
+          var bestImageInfo = _this17.getBestImageForType(srcType);
 
           var imageStyle = _objectSpread2(
             {},
@@ -1917,14 +1997,14 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                 {
                   className: ''.concat(imageClass, ' ril__image ril-errored'),
                   style: imageStyle,
-                  key: _this16.props[srcType] + keyEndings[srcType],
+                  key: _this17.props[srcType] + keyEndings[srcType],
                 },
                 React.createElement(
                   'div',
                   {
                     className: 'ril__errorContainer',
                   },
-                  _this16.props.imageLoadErrorMessage
+                  _this17.props.imageLoadErrorMessage
                 )
               )
             );
@@ -1956,7 +2036,7 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                     ' ril__image ril-not-loaded'
                   ),
                   style: imageStyle,
-                  key: _this16.props[srcType] + keyEndings[srcType],
+                  key: _this17.props[srcType] + keyEndings[srcType],
                 },
                 React.createElement(
                   'div',
@@ -1982,8 +2062,8 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                     imageClass,
                     ' ril__image ril__imageDiscourager'
                   ),
-                  onDoubleClick: _this16.handleImageDoubleClick,
-                  onWheel: _this16.handleImageMouseWheel,
+                  onDoubleClick: _this17.handleImageDoubleClick,
+                  onWheel: _this17.handleImageMouseWheel,
                   style: imageStyle,
                   key: imageSrc + keyEndings[srcType],
                 },
@@ -2005,8 +2085,8 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                     : {},
                   {
                     className: ''.concat(imageClass, ' ril__image'),
-                    onDoubleClick: _this16.handleImageDoubleClick,
-                    onWheel: _this16.handleImageMouseWheel,
+                    onDoubleClick: _this17.handleImageDoubleClick,
+                    onWheel: _this17.handleImageMouseWheel,
                     onDragStart: function onDragStart(e) {
                       return e.preventDefault();
                     },
@@ -2074,8 +2154,8 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                 : undefined,
               onAfterOpen: function onAfterOpen() {
                 // Focus on the div with key handlers
-                if (_this16.outerEl.current) {
-                  _this16.outerEl.current.focus();
+                if (_this17.outerEl.current) {
+                  _this17.outerEl.current.focus();
                 }
 
                 _onAfterOpen();
@@ -2341,6 +2421,8 @@ ReactImageLightbox.propTypes = {
   // Should change the parent state such that props.nextSrc becomes props.mainSrc,
   //  props.mainSrc becomes props.prevSrc, etc.
   onMoveNextRequest: PropTypes.func,
+  onRotateCWRequest: PropTypes.func,
+  onRotateCCWRequest: PropTypes.func,
   // Called when an image fails to load
   // (imageSrc: string, srcType: string, errorEvent: object): void
   onImageLoadError: PropTypes.func,
@@ -2432,6 +2514,8 @@ ReactImageLightbox.defaultProps = {
   onImageLoad: function onImageLoad() {},
   onMoveNextRequest: function onMoveNextRequest() {},
   onMovePrevRequest: function onMovePrevRequest() {},
+  onRotateCWRequest: function onRotateCWRequest() {},
+  onRotateCCWRequest: function onRotateCCWRequest() {},
   prevLabel: 'Previous image',
   prevSrc: null,
   prevSrcThumbnail: null,
