@@ -2141,6 +2141,7 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
 
         addImage('nextSrc', 'ril-image-next ril__imageNext', {
           x: boxSize.width,
+          angle: 0,
         }); // Main Image
 
         addImage('mainSrc', 'ril-image-current', {
@@ -2152,6 +2153,7 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
 
         addImage('prevSrc', 'ril-image-prev ril__imagePrev', {
           x: -1 * boxSize.width,
+          angle: 0,
         });
         var modalStyle = {
           overlay: _objectSpread2(

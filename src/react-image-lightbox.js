@@ -1489,6 +1489,7 @@ class ReactImageLightbox extends Component {
     // Next Image (displayed on the right)
     addImage('nextSrc', 'ril-image-next ril__imageNext', {
       x: boxSize.width,
+      angle: 0,
     });
     // Main Image
     addImage('mainSrc', 'ril-image-current', {
@@ -1500,6 +1501,7 @@ class ReactImageLightbox extends Component {
     // Previous Image (displayed on the left)
     addImage('prevSrc', 'ril-image-prev ril__imagePrev', {
       x: -1 * boxSize.width,
+      angle: 0,
     });
 
     const modalStyle = {

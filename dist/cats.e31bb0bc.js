@@ -39320,7 +39320,8 @@ object-assign
                   _ref$zoom = _ref.zoom,
                   zoom = _ref$zoom === void 0 ? 1 : _ref$zoom,
                   width = _ref.width,
-                  targetWidth = _ref.targetWidth;
+                  targetWidth = _ref.targetWidth,
+                  angle = _ref.angle;
                 var nextX = x;
                 var windowWidth = (0, _util.getWindowWidth)();
 
@@ -39334,7 +39335,8 @@ object-assign
                     .concat(nextX, 'px,')
                     .concat(y, 'px,0) scale3d(')
                     .concat(scaleFactor, ',')
-                    .concat(scaleFactor, ',1)'),
+                    .concat(scaleFactor, ',1) rotate(')
+                    .concat(angle, 'deg)'),
                 };
               },
             },
@@ -41158,17 +41160,19 @@ object-assign
 
                 addImage('nextSrc', 'ril-image-next ril__imageNext', {
                   x: boxSize.width,
+                  angle: 0,
                 }); // Main Image
 
                 addImage('mainSrc', 'ril-image-current', {
                   x: -1 * offsetX,
                   y: -1 * offsetY,
                   zoom: zoomMultiplier,
-                  transform: 'rotate(' + 90 * mainRotation + 'deg)',
+                  angle: 90 * mainRotation,
                 }); // Previous Image (displayed on the left)
 
                 addImage('prevSrc', 'ril-image-prev ril__imagePrev', {
                   x: -1 * boxSize.width,
+                  angle: 0,
                 });
                 var modalStyle = {
                   overlay: _objectSpread(
@@ -42381,7 +42385,7 @@ object-assign
           var hostname = '' || location.hostname;
           var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
           var ws = new WebSocket(
-            protocol + '://' + hostname + ':' + '55206' + '/'
+            protocol + '://' + hostname + ':' + '56376' + '/'
           );
 
           ws.onmessage = function(event) {
