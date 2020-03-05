@@ -129,7 +129,9 @@ class ReactImageLightbox extends Component {
     this.handleWindowResize = this.handleWindowResize.bind(this);
     this.handleZoomInButtonClick = this.handleZoomInButtonClick.bind(this);
     this.handleZoomOutButtonClick = this.handleZoomOutButtonClick.bind(this);
-    this.handleRotateCCWButtonClick = this.handleRotateCCWButtonClick.bind(this);
+    this.handleRotateCCWButtonClick = this.handleRotateCCWButtonClick.bind(
+      this
+    );
     this.handleRotateCWButtonClick = this.handleRotateCWButtonClick.bind(this);
     this.requestClose = this.requestClose.bind(this);
     this.requestMoveNext = this.requestMoveNext.bind(this);
@@ -569,7 +571,7 @@ class ReactImageLightbox extends Component {
     const currentTime = new Date();
     if (
       currentTime.getTime() - this.lastKeyDownTime <
-      this.props.keyRepeatLimit &&
+        this.props.keyRepeatLimit &&
       keyCode !== KEYS.ESC
     ) {
       return;
@@ -1396,7 +1398,7 @@ class ReactImageLightbox extends Component {
         }),
       };
 
-      imageStyle.transform = `rotate(${90 * mainRotation}deg)`;
+      //imageStyle.transforms.push = `rotate(${90 * mainRotation}deg)`;
 
       if (zoomLevel > MIN_ZOOM_LEVEL) {
         imageStyle.cursor = 'move';
@@ -1493,6 +1495,7 @@ class ReactImageLightbox extends Component {
       x: -1 * offsetX,
       y: -1 * offsetY,
       zoom: zoomMultiplier,
+      transform: 'rotate(' + 90 * mainRotation + 'deg)',
     });
     // Previous Image (displayed on the left)
     addImage('prevSrc', 'ril-image-prev ril__imagePrev', {
@@ -1544,7 +1547,7 @@ class ReactImageLightbox extends Component {
           // Floating modal with closing animations
           className={`ril-outer ril__outer ril__outerAnimating ${
             this.props.wrapperClassName
-            } ${isClosing ? 'ril-closing ril__outerClosing' : ''}`}
+          } ${isClosing ? 'ril-closing ril__outerClosing' : ''}`}
           style={{
             transition: `opacity ${animationDuration}ms`,
             animationDuration: `${animationDuration}ms`,
@@ -1864,13 +1867,13 @@ ReactImageLightbox.defaultProps = {
   nextSrc: null,
   nextRotation: 0,
   nextSrcThumbnail: null,
-  onAfterOpen: () => { },
-  onImageLoadError: () => { },
-  onImageLoad: () => { },
-  onMoveNextRequest: () => { },
-  onMovePrevRequest: () => { },
-  onRotateCWRequest: () => { },
-  onRotateCCWRequest: () => { },
+  onAfterOpen: () => {},
+  onImageLoadError: () => {},
+  onImageLoad: () => {},
+  onMoveNextRequest: () => {},
+  onMovePrevRequest: () => {},
+  onRotateCWRequest: () => {},
+  onRotateCCWRequest: () => {},
   prevLabel: 'Previous image',
   prevSrc: null,
   prevRotation: 0,
