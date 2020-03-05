@@ -132,6 +132,8 @@ class ReactImageLightbox extends Component {
     this.requestClose = this.requestClose.bind(this);
     this.requestMoveNext = this.requestMoveNext.bind(this);
     this.requestMovePrev = this.requestMovePrev.bind(this);
+    this.requestRotateCCW = this.requestRotateCCW.bind(this);
+    this.requestRotateCW = this.requestRotateCW.bind(this);
   }
 
   // eslint-disable-next-line camelcase
@@ -577,6 +579,24 @@ class ReactImageLightbox extends Component {
       case KEYS.ESC:
         event.preventDefault();
         this.requestClose(event);
+        break;
+
+      // SPACE key closes the lightbox
+      case KEYS.SPACE:
+        event.preventDefault();
+        this.requestClose(event);
+        break;
+
+      // A letter key rotates the image CCW
+      case KEYS.LETTER_A:
+        event.preventDefault();
+
+        break;
+
+      // D letter key rotates the image CW
+      case KEYS.LETTER_D:
+        event.preventDefault();
+
         break;
 
       // Left arrow key moves to previous image
@@ -1219,6 +1239,40 @@ class ReactImageLightbox extends Component {
     this.setTimeout(closeLightbox, this.props.animationDuration);
   }
 
+  requestRotate(direction, event) {
+    // Reset the zoom level on image move
+    const nextState = {
+      zoomLevel: MIN_ZOOM_LEVEL,
+      offsetX: 0,
+      offsetY: 0,
+    };
+
+    // Enable animated states
+    if (
+      !this.props.animationDisabled &&
+      (!this.keyPressed || this.props.animationOnKeyInput)
+    ) {
+      nextState.shouldAnimate = true;
+      this.setTimeout(
+        () => this.setState({ shouldAnimate: false }),
+        this.props.animationDuration
+      );
+    }
+    this.keyPressed = false;
+
+    this.rotateRequested = true;
+
+    if (direction === 'CW') {
+      this.keyCounter -= 1;
+      this.setState(nextState);
+      this.props.onRotateCWRequest(event);
+    } else {
+      this.keyCounter += 1;
+      this.setState(nextState);
+      this.props.onRotateCWRequest(event);
+    }
+  }
+
   requestMove(direction, event) {
     // Reset the zoom level on image move
     const nextState = {
@@ -1251,6 +1305,16 @@ class ReactImageLightbox extends Component {
       this.setState(nextState);
       this.props.onMoveNextRequest(event);
     }
+  }
+
+  // Request to rotate image clocwise
+  requestRotateCW(event) {
+    this.requestRotate('CW', event);
+  }
+
+  // Request to rotate image counterclockwise
+  requestRotateCW(event) {
+    this.requestRotate('CCW', event);
   }
 
   // Request to transition to the next image
@@ -1667,6 +1731,9 @@ ReactImageLightbox.propTypes = {
   //  props.mainSrc becomes props.prevSrc, etc.
   onMoveNextRequest: PropTypes.func,
 
+  onRotateCWRequest: PropTypes.func,
+  onRotateCCWRequest: PropTypes.func,
+
   // Called when an image fails to load
   // (imageSrc: string, srcType: string, errorEvent: object): void
   onImageLoadError: PropTypes.func,
@@ -1785,6 +1852,8 @@ ReactImageLightbox.defaultProps = {
   onImageLoad: () => {},
   onMoveNextRequest: () => {},
   onMovePrevRequest: () => {},
+  onRotateCWRequest: () => {},
+  onRotateCCWRequest: () => {},
   prevLabel: 'Previous image',
   prevSrc: null,
   prevSrcThumbnail: null,

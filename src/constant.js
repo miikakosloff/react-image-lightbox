@@ -20,6 +20,14 @@ export const KEYS = {
   ESC: 27,
   LEFT_ARROW: 37,
   RIGHT_ARROW: 39,
+  SPACE: 32,
+  LETTER_A: 65,
+  LETTER_D: 68,
+  NUMBER_1: 49,
+  NUMBER_2: 50,
+  NUMBER_3: 51,
+  NUMBER_4: 52,
+  NUMBER_5: 53,
 };
 
 // Actions
