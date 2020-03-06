@@ -2387,8 +2387,8 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                           viewBox: '64 64 896 896',
                           focusable: 'false',
                           'data-icon': 'redo',
-                          width: '18px',
-                          height: '18px',
+                          width: '20px',
+                          height: '34px',
                           'aria-hidden': 'true',
                           style: {
                             fill: 'white',
@@ -2433,8 +2433,8 @@ var ReactImageLightbox = /*#__PURE__*/ (function(_Component) {
                           viewBox: '64 64 896 896',
                           focusable: 'false',
                           'data-icon': 'redo',
-                          width: '18px',
-                          height: '18px',
+                          width: '20px',
+                          height: '34px',
                           'aria-hidden': 'true',
                           style: {
                             fill: 'white',

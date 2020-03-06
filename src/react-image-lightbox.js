@@ -1695,8 +1695,8 @@ class ReactImageLightbox extends Component {
                       viewBox="64 64 896 896"
                       focusable="false"
                       data-icon="redo"
-                      width="18px"
-                      height="18px"
+                      width="20px"
+                      height="34px"
                       aria-hidden="true"
                       style={{ fill: 'white', transform: 'rotate(90deg)' }}
                     >
@@ -1729,8 +1729,8 @@ class ReactImageLightbox extends Component {
                       viewBox="64 64 896 896"
                       focusable="false"
                       data-icon="redo"
-                      width="18px"
-                      height="18px"
+                      width="20px"
+                      height="34px"
                       aria-hidden="true"
                       style={{ fill: 'white', transform: 'rotate(-90deg)' }}
                     >
