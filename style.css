@@ -188,10 +188,9 @@
     no-repeat center;
 }
 
-.ril__rotateCCWButton {
-}
-
+.ril__rotateCCWButton,
 .ril__rotateCWButton {
+  background: none;
 }
 
 .ril__zoomInButton {
