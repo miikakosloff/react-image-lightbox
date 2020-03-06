@@ -1,0 +1,22 @@
+{
+  "id": "RotateCW.svg",
+  "dependencies": [
+    {
+      "name": "/Users/miikakosloff/Projektit/caruna/react-image-lightbox/.babelrc",
+      "includedInParent": true,
+      "mtime": 1583395632669
+    },
+    {
+      "name": "/Users/miikakosloff/Projektit/caruna/react-image-lightbox/package.json",
+      "includedInParent": true,
+      "mtime": 1583395632681
+    }
+  ],
+  "generated": {
+    "js": "module.exports = \"/af8a41325356f90fe6d204cb93ce55aa.svg\";"
+  },
+  "sourceMaps": null,
+  "error": null,
+  "hash": "2014220fd66d27d7a7ac828be5b7c07f",
+  "cacheData": { "env": {} }
+}
